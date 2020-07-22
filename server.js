@@ -4,8 +4,6 @@ var defense;
 var vigor;
 var agility;
 var elements;
-var weapon = ["sword", "bow", "spear", "axe"];
-var accessory = ["gauntlet", "ring", "shield", "amulet"];
 var armorClass;
 var health;
 var priority;
@@ -25,8 +23,6 @@ var playerInitiative;
 var oppInitiative;
 var tooSlow;
 var roundCount = 1;
-var remainingPHealth;
-var remainingOHealth;
 
 
 
@@ -164,7 +160,6 @@ function Character(name, pic, Attributes, Weapon, Accessory, armorClass, health,
   */
 
   this.rollInitiative = function (opponentCharacter) {
-    
 
     d20();
     playerInitiative = (d20roll + this.Attributes.agility);
@@ -173,29 +168,18 @@ function Character(name, pic, Attributes, Weapon, Accessory, armorClass, health,
     oppInitiative = (d20roll + opponentCharacter.Attributes.agility);
 
     if (playerInitiative < oppInitiative) {
-
       tooSlow = true
-
     }
 
-    else tooSlow = false
-
-  }
-
-  this.compare = function (opponentCharacter) {
-    //switch (roundAct)
-    console.log(this.name)
-    console.log(opponentCharacter.name)
+    else {tooSlow = false}
   }
 
   this.clash = function (opponentCharacter) {
 
-    //priority = (d20() + agility)
-
     d20();
     d8();
     //atkElem set by button click
-    
+
 
     defElem = opponentCharacter.elements[Math.floor(Math.random() * 2)];
 
@@ -205,11 +189,8 @@ function Character(name, pic, Attributes, Weapon, Accessory, armorClass, health,
     console.log(opponentCharacter.name + " defends with " + defElem);
     console.log("--------------------------------------")
 
-    
-    $("#weapon").html(defElem)
-    
+    $("#defElem").html(defElem)
 
-    
     resCheck(atkElem, defElem);
 
     toHit = (d20roll + this.Attributes.attack);
@@ -244,7 +225,7 @@ function Character(name, pic, Attributes, Weapon, Accessory, armorClass, health,
           opponentCharacter.health -= damage;
       }
 
-      $("#accessory").html(damage)
+      $("#damage").html(damage)
       $("#defender").html(opponentCharacter.name)
       console.log(opponentCharacter.name + " takes " + damage + " damage!")
       console.log("--------------------------------------")
@@ -253,6 +234,7 @@ function Character(name, pic, Attributes, Weapon, Accessory, armorClass, health,
     }
 
     else {
+      $("#damage").html(0)
       console.log(this.name + "'s attack misses!")
       console.log("--------------------------------------")
       console.log("--------------------------------------")
@@ -290,54 +272,58 @@ function creation(answers) {
 
 function playGame() {
 
-
   chosenPlayer.rollInitiative(chosenOpp);
 
   switch (true) {
 
     case (chosenPlayer.health <= 0):
-      
-    console.log("You lose!")
-    
+
+      console.log("You lose!")
+
       break;
 
     case (chosenOpp.health <= 0):
-      
+
       console.log("You win!")
-    
+
       break;
 
     case (playerWent):
-      
+
       playerWent = false;
+
       atkElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
 
       console.log(chosenOpp.name + " is attacking...")
       console.log("--------------------------------------")
 
 
-      setTimeout(function(){ chosenOpp.clash(chosenPlayer);
-        $("#pHealth").html(chosenPlayer.health); 
+      setTimeout(function () {
+        chosenOpp.clash(chosenPlayer);
+        $("#pHealth").html(chosenPlayer.health);
 
         roundCount++;
         $("#round").html(roundCount)
-        playGame();      
-       
-      }, 3000);
-      
+        playGame();
 
-      
+      }, 3000);
+
+
+
       break;
 
     case (tooSlow):
-     
-      
+
+
       atkElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
 
       console.log(chosenOpp.name + " is attacking...")
+      console.log("--------------------------------------")
 
-      setTimeout(function(){ chosenOpp.clash(chosenPlayer);
-        $("#pHealth").html(chosenPlayer.health); 
+
+      setTimeout(function () {
+        chosenOpp.clash(chosenPlayer);
+        $("#pHealth").html(chosenPlayer.health);
       }, 3000);
 
       if (chosenPlayer.health <= 0) {
@@ -346,13 +332,11 @@ function playGame() {
 
       }
 
-    
+
       break;
 
     default:
-    
-    
-    
+    //pass
   }
 }
 
@@ -383,39 +367,42 @@ chosenOpp = Davriel;
 $("#oHealth").html(chosenOpp.health);
 
 // Round 1
-chosenPlayer.rollInitiative(chosenOpp);
-  playGame();
-
+$("#round").html(roundCount)
+playGame();
 
 $("#atkButton1").click(function () {
+
+  $("#atkElem").html(atkElem);
 
   if (tooSlow == true) {
     tooSlow = false;
     roundCount++;
     $("#round").html(roundCount)
   }
+  else { playerWent = true }
 
   atkElem = $("#atkButton1").html();
   chosenPlayer.clash(chosenOpp);
-  
+
   $("#oHealth").html(chosenOpp.health);
-  playerWent = true;
   playGame();
 });
 
 $("#atkButton2").click(function () {
 
+  $("#atkElem").html(atkElem);
+
   if (tooSlow == true) {
     tooSlow = false;
     roundCount++;
     $("#round").html(roundCount)
   }
-  
+  else { playerWent = true }
+
   atkElem = $("#atkButton2").html();
   chosenPlayer.clash(chosenOpp);
-  
+
   $("#oHealth").html(chosenOpp.health);
-  playerWent = true;
   playGame();
 });
 
