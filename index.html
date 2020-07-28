@@ -4,12 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Colosseum</title>
-  <link rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <link rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet"
-    href="node_modules\chosen-js\chosen.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="node_modules\chosen-js\chosen.min.css">
+  <link rel="stylesheet" type="text/css" href="public/assets/css/style.css">
   <script src="https://code.jquery.com/jquery.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="node_modules\chosen-js\chosen.jquery.min.js"></script>
@@ -22,60 +20,77 @@
   <div class="container">
     <div class="jumbotron">
       <h1>Colosseum</h1>
- 
 
-        <div class="card">
-          <div class="card-header">
-            <h3><strong>Character Statistics</strong></h3>
-          </div>
-          <div class="card-body">
-            <select class="charCreate" id="chosenStrongAttribute" multiple data-placeholder="Select Up to Two Specialties" style="width:200px;">
-              <option id="chosenStrongAttack" value="1">Attack</option>
-              <option id="chosenStrongDefense" value="2">Defense</option>
-              <option id="chosenStrongAgility" value="3">Agility</option>
-              <option id="chosenStrongVigor" value="4">Vigor</option>
-            </select>
-            <select class="charCreate" id="chosenWeakAttribute" multiple data-placeholder="Select Weaknesses" style="width:200px;">
-              <option id="chosenWeakAttack" value="13">Attack</option>
-              <option id="chosenWeakDefense" value="14">Defense</option>
-              <option id="chosenWeakAgility" value="15">Agility</option>
-              <option id="chosenWeakVigor" value="16">Vigor</option>
-            </select>
-            <select class="charCreate" data-placeholder="Select Your Weapon" style="width:200px;">
-              <option id="chosenNullWeapon" value="0"></option>
-              <option id="chosenSword" value="5">Sword</option>
-              <option id="chosenSpear" value="6">Spear</option>
-              <option id="chosenBow" value="7">Bow</option>
-              <option id="chosenAxe" value="8">Axe</option>
-            </select>
-            <select class="charCreate" data-placeholder="Select Your Accessory" style="width:200px;">
-              <option id="chosenNullAccessory" value="00"></option>
-              <option id="chosenGauntlet" value="9">Gauntlet</option>
-              <option id="chosenShield" value="10">Shield</option>
-              <option id="chosenRing" value="11">Ring</option>
-              <option id="chosenAmulet" value="12">Amulet</option>
-            </select>
-            <h2 id="name"></h2>
-            <div id="stats">
-              <h3><strong>Round:</strong> <span id="round"></span></h3>
-              <h3><strong>Player Health:</strong> <span id="pHealth"></span></h3>
-              <h3><strong>Enemy Health:</strong> <span id="oHealth"></span></h3>
-              <h3><strong>AtkElem:</strong> <span id="atkElem"></span></h3>
-              <h3><strong>DefElem:</strong> <span id="defElem"></span></h3>
-              <h3><strong>Damage:</strong> <span id="damage"></span></h3>
-              <h3><strong>Defender:</strong> <span id="defender"></span></h3>
+
+      <div class="card">
+        <div class="card-header">
+          <h3><strong>Character Statistics</strong></h3>
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Character Name:</span>
+              </div>
+              <input id="name" type="text" class="form-control" aria-label="Character Name"
+                aria-describedby="inputGroup-sizing-default">
             </div>
-            <!-- Append Buttons to divs on page?-->
-            <button type="button" class="btn btn-primary atkButton">Water</button>
-            <button type="button" class="btn btn-danger atkButton">Fire</button>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Character Portrait Link:</span>
+              </div>
+              <input id="pic" type="text" class="form-control" aria-label="Character Portrait Link"
+                aria-describedby="inputGroup-sizing-default">
+            </div>
+            <select class="charCreate" id="chosenStrongAttribute" multiple
+              data-placeholder="Select Up to Two Specialties" style="width:200px;">
+              <option id="chosenStrongAttack" value="strongAttack">Attack</option>
+              <option id="chosenStrongDefense" value="strongDefense">Defense</option>
+              <option id="chosenStrongAgility" value="strongAgility">Agility</option>
+              <option id="chosenStrongVigor" value="strongVigor">Vigor</option>
+            </select>
+            <select class="charCreate" id="chosenWeakAttribute" multiple data-placeholder="Select Weaknesses"
+              style="width:200px;">
+              <option id="chosenWeakAttack" value="weakAttack">Attack</option>
+              <option id="chosenWeakDefense" value="weakDefense">Defense</option>
+              <option id="chosenWeakAgility" value="weakAgility">Agility</option>
+              <option id="chosenWeakVigor" value="weakVigor">Vigor</option>
+            </select>
+            <select class="charCreate items" id="chosenWeapon" data-placeholder="Select Your Weapon"
+              style="width:200px;">
+              <option id="chosenNullWeapon" value="0"></option>
+              <option class="weapons" id="chosenSword" value="sword">Sword</option>
+              <option class="weapons" id="chosenSpear" value="spear">Spear</option>
+              <option class="weapons" id="chosenBow" value="bow">Bow</option>
+              <option class="weapons" id="chosenAxe" value="axe">Axe</option>
+            </select>
+            <select class="charCreate items" id="chosenAccessory" data-placeholder="Select Your Accessory"
+              style="width:200px;">
+              <option id="chosenNullAccessory" value="00"></option>
+              <option class="accessories" id="chosenGauntlet" value="gauntlet">Gauntlet</option>
+              <option class="accessories" id="chosenShield" value="shield">Shield</option>
+              <option class="accessories" id="chosenRing" value="ring">Ring</option>
+              <option class="accessories" id="chosenAmulet" value="amulet">Amulet</option>
+            </select>
+            <br><br><br>
+            <button class="btn btn-primary" id="submit" type="submit">Create Character</button>
+          </form>
+
+          <div id="stats">
+            <h3><strong>Round:</strong> <span id="round"></span></h3>
+            <h3><strong>Player Health:</strong> <span id="pHealth"></span></h3>
+            <h3><strong>Enemy Health:</strong> <span id="oHealth"></span></h3>
           </div>
+
+          <div id="buttonField"></div>
         </div>
       </div>
     </div>
   </div>
+  </div>
 
   <script src="server.js"></script>
-  
+
 </body>
 
 </html>
