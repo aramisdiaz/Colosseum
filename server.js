@@ -438,34 +438,42 @@ var updateStat = function (evt, params) {
   switch (params.deselected) {
     case ("strongAttack"):
       $("#chosenWeakAttack").removeAttr("disabled");
+      checkStrong(evt);
       break;
 
     case ("strongDefense"):
       $("#chosenWeakDefense").removeAttr("disabled");
+      checkStrong(evt);
       break;
 
     case ("strongAgility"):
       $("#chosenWeakAgility").removeAttr("disabled");
+      checkStrong(evt);
       break;
 
     case ("strongVigor"):
       $("#chosenWeakVigor").removeAttr("disabled");
+      checkStrong(evt);
       break;
 
     case ("weakAttack"):
       $("#chosenStrongAttack").removeAttr("disabled");
+      checkWeak(evt)
       break;
 
     case ("weakDefense"):
       $("#chosenStrongDefense").removeAttr("disabled");
+      checkWeak(evt)
       break;
 
     case ("weakAgility"):
       $("#chosenStrongAgility").removeAttr("disabled");
+      checkWeak(evt)
       break;
 
     case ("weakVigor"):
       $("#chosenStrongVigor").removeAttr("disabled");
+      checkWeak(evt)
       break;
 
     default:
@@ -521,6 +529,9 @@ $("#submit").on("click", function (event) {
   }
 
   if (isValid == true) {
+    
+    $("#submit").hide();
+
     switch (equippedWeapon.attribute) {
       case ("attack"):
         editedAttack += 1;
