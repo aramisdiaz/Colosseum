@@ -9,6 +9,24 @@ var playerInitiative;
 var oppInitiative;
 var tooSlow;
 var roundCount = 1;
+var numberStrong = 0;
+var numberWeak = 0;
+var isValid = false;
+
+var weaponIsEquipped = false;
+var accessoryIsEquipped = false;
+var equippedWeapon;
+var equippedAccessory;
+
+//eguippedWeaponBonus = sword.attribute
+// if weapon.attribute matches attribute, +1 to that attribute
+//select weapon, selectedWeapon = that weapon
+
+var editedAttack = 3;
+var editedDefense = 3;
+var editedVigor = 3;
+var editedAgility = 3;
+
 
 
 function Attributes(attack, defense, vigor, agility) {
@@ -31,15 +49,15 @@ function Accessory(name, attribute, element) {
 }
 
 //Make into a table in MYSQL
-var sword = new Weapon("Sword", "attack", "Fire");
-var bow = new Weapon("Bow", "agility", "Air");
-var spear = new Weapon("Spear", "defense", "Water");
-var axe = new Weapon("Axe", "vigor", "Earth");
+var sword = new Weapon("sword", "attack", "Fire");
+var bow = new Weapon("bow", "agility", "Air");
+var spear = new Weapon("spear", "defense", "Water");
+var axe = new Weapon("axe", "vigor", "Earth");
 
-var gauntlet = new Accessory("Gauntlet", "attack", "Fire");
-var ring = new Accessory("Ring", "agility", "Air");
-var shield = new Accessory("Shield", "defense", "Water");
-var amulet = new Accessory("Amulet", "vigor", "Earth");
+var gauntlet = new Accessory("gauntlet", "attack", "Fire");
+var ring = new Accessory("ring", "agility", "Air");
+var shield = new Accessory("shield", "defense", "Water");
+var amulet = new Accessory("amulet", "vigor", "Earth");
 
 
 function d20() {
@@ -50,55 +68,8 @@ function d8() {
   d8roll = Math.ceil(Math.random() * Math.ceil(8));
 }
 
-resCheck = function (atkElem, defElem) {
 
-  switch (true) {
-
-    // Weaknesses
-    case (atkElem == "Fire") && (defElem == "Earth"):
-      res = 2;
-      break;
-
-    case (atkElem == "Air") && (defElem == "Water"):
-      res = 2;
-      break;
-
-    case (atkElem == "Water") && (defElem == "Fire"):
-      res = 2;
-      break;
-
-    case (atkElem == "Earth") && (defElem == "Air"):
-      res = 2;
-      break;
-
-    // Resistances
-    case (atkElem == "Earth") && (defElem == "Fire"):
-      res = 0.5;
-      break;
-
-    case (atkElem == "Water") && (defElem == "Air"):
-      res = 0.5;
-      break;
-
-    case (atkElem == "Fire") && (defElem == "Water"):
-      res = 0.5;
-      break;
-
-    case (atkElem == "Air") && (defElem == "Earth"):
-      res = 0.5;
-      break;
-
-    // Defaults to no advantage
-    default:
-      res = 1
-
-  }
-}
-
-
-
-
-function Character(name, pic, attributes, weapon, accessory, armorClass, health, elements) {
+function Character(name, pic, attributes, weapon, accessory, armorClass, health, elements, atkElem, defElem) {
   this.name = name;
   this.pic = pic;
   this.attributes = attributes
@@ -107,6 +78,8 @@ function Character(name, pic, attributes, weapon, accessory, armorClass, health,
   this.armorClass = armorClass;
   this.health = health;
   this.elements = elements;
+  this.atkElem = atkElem;
+  this.defElem = defElem;
 
 
   this.rollInitiative = function (opponentCharacter) {
@@ -125,9 +98,54 @@ function Character(name, pic, attributes, weapon, accessory, armorClass, health,
 
     else {
       tooSlow = false
-
       $(".atkButton").prop('disabled', false);
       //Show button
+    }
+  }
+
+
+  this.resCheck = function (opponentCharacter) {
+
+    switch (true) {
+
+      // Weaknesses
+      case (this.atkElem == "Fire") && (opponentCharacter.defElem == "Earth"):
+        res = 2;
+        break;
+
+      case (this.atkElem == "Air") && (opponentCharacter.defElem == "Water"):
+        res = 2;
+        break;
+
+      case (this.atkElem == "Water") && (opponentCharacter.defElem == "Fire"):
+        res = 2;
+        break;
+
+      case (this.atkElem == "Earth") && (opponentCharacter.defElem == "Air"):
+        res = 2;
+        break;
+
+      // Resistances
+      case (this.atkElem == "Earth") && (opponentCharacter.defElem == "Fire"):
+        res = 0.5;
+        break;
+
+      case (this.atkElem == "Water") && (opponentCharacter.defElem == "Air"):
+        res = 0.5;
+        break;
+
+      case (this.atkElem == "Fire") && (opponentCharacter.defElem == "Water"):
+        res = 0.5;
+        break;
+
+      case (this.atkElem == "Air") && (opponentCharacter.defElem == "Earth"):
+        res = 0.5;
+        break;
+
+      // Defaults to no advantage
+      default:
+        res = 1
+
     }
   }
 
@@ -138,15 +156,16 @@ function Character(name, pic, attributes, weapon, accessory, armorClass, health,
 
 
 
-    console.log(this.name + " attacks with " + atkElem);
+    console.log(this.name + " attacks with " + this.atkElem);
     console.log("--------------------------------------")
 
-    console.log(opponentCharacter.name + " defends with " + defElem);
+    console.log(opponentCharacter.name + " defends with " + opponentCharacter.defElem);
     console.log("--------------------------------------")
 
-    $("#defElem").html(defElem)
+    $("#defElem").html(opponentCharacter.defElem)
 
-    resCheck(atkElem, defElem);
+    this.resCheck(opponentCharacter);
+    console.log("Resistance = " + res)
 
     toHit = (d20roll + this.attributes.attack);
     console.log(this.name + " rolls " + toHit + " to hit!")
@@ -194,7 +213,7 @@ function Character(name, pic, attributes, weapon, accessory, armorClass, health,
   }
 }
 
-
+//Ai in here
 function playGame() {
 
   chosenPlayer.rollInitiative(chosenOpp);
@@ -202,14 +221,14 @@ function playGame() {
   switch (true) {
 
     case (chosenPlayer.health <= 0):
-
+      $(".atkButton").prop('disabled', true);
       console.log("You lose!")
       //Game Over Screen
 
       break;
 
     case (chosenOpp.health <= 0):
-
+      $(".atkButton").prop('disabled', true);
       console.log("You win!")
       //Next Round Function
 
@@ -217,13 +236,15 @@ function playGame() {
 
     case (playerWent):
 
-      playerWent = false;
       $(".atkButton").prop('disabled', true);
+      playerWent = false;
 
-      atkElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
-      $("#atkElem").html(atkElem);
 
-      console.log(chosenOpp.name + " is attacking...")
+      chosenOpp.atkElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
+      $("#atkElem").html(chosenOpp.atkElem);
+      chosenOpp.defElem = chosenOpp.atkElem;
+
+      console.log(chosenOpp.name + " is attacking with " + chosenOpp.atkElem + "...")
       console.log("--------------------------------------")
 
       //Add Animations Here
@@ -231,7 +252,6 @@ function playGame() {
       setTimeout(function () {
         chosenOpp.clash(chosenPlayer);
         $("#pHealth").html(chosenPlayer.health);
-
         roundCount++;
         $("#round").html(roundCount)
         playGame();
@@ -244,16 +264,18 @@ function playGame() {
 
     case (tooSlow):
 
-      if (roundCount == 1) {
-        defElem = chosenPlayer.elements[Math.floor(Math.random() * 2)];
-      }
-
       $(".atkButton").prop('disabled', true);
 
-      atkElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
-      $("#atkElem").html(atkElem);
 
-      console.log(chosenOpp.name + " is attacking...")
+      if (roundCount == 1) {
+        chosenPlayer.defElem = chosenPlayer.elements[Math.floor(Math.random() * 2)];
+      }
+
+      chosenOpp.atkElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
+      $("#atkElem").html(chosenOpp.atkElem);
+      chosenOpp.defElem = chosenOpp.atkElem;
+
+      console.log(chosenOpp.name + " is attacking with " + chosenOpp.atkElem + "...")
       console.log("--------------------------------------")
 
       //Add Animations Here
@@ -265,7 +287,7 @@ function playGame() {
       }, 3000);
 
       if (chosenPlayer.health <= 0) {
-
+        $(".atkButton").prop('disabled', true);
         console.log("You lose!")
         //Game Over Screen
 
@@ -276,16 +298,14 @@ function playGame() {
     default:
     //pass
   }
+  if (chosenPlayer.health <= 0) {
+    $(".atkButton").prop('disabled', true);
+    console.log("You lose!")}
+  
+    else if (chosenOpp.health <= 0) {
+    $(".atkButton").prop('disabled', true);
+    console.log("You win!")}
 }
-
-// Fire>Earth>Air>Water>Fire
-
-d20();
-
-var chosenSelectValue;
-var chosenDeselectValue;
-
-//Select Weapon, deselects Accessory of same element
 
 $(".charCreate").chosen({
   disable_search: true,
@@ -293,119 +313,121 @@ $(".charCreate").chosen({
 });
 
 
-var updateStat = function (params) {
+var checkStrong = function (evt) {
+  numberStrong = evt.currentTarget.selectedOptions.length;
+}
+
+var checkWeak = function (evt) {
+  numberWeak = evt.currentTarget.selectedOptions.length;
+}
+
+var updateStat = function (evt, params) {
 
   switch (params.selected) {
 
-    case ("0"):
-      $("#chosenGauntlet").removeAttr("disabled");
-      $("#chosenShield").removeAttr("disabled");
-      $("#chosenRing").removeAttr("disabled");
-      $("#chosenAmulet").removeAttr("disabled");
-      break;
-
-    case ("00"):
-      $("#chosenSword").removeAttr("disabled");
-      $("#chosenSpear").removeAttr("disabled");
-      $("#chosenBow").removeAttr("disabled");
-      $("#chosenAxe").removeAttr("disabled");
-      break;
-
-    case ("1"):
+    case ("strongAttack"):
       $("#chosenWeakAttack").attr("disabled", "disabled");
+      editedAttack += 1
+      checkStrong(evt);
       break;
 
-    case ("2"):
+    case ("strongDefense"):
       $("#chosenWeakDefense").attr("disabled", "disabled");
+      editedDefense += 1
+      checkStrong(evt);
       break;
 
-    case ("3"):
+    case ("strongAgility"):
       $("#chosenWeakAgility").attr("disabled", "disabled");
+      editedAgility += 1
+      checkStrong(evt);
       break;
 
-    case ("4"):
+    case ("strongVigor"):
       $("#chosenWeakVigor").attr("disabled", "disabled");
+      editedVigor += 1
+      checkStrong(evt);
       break;
 
-    case ("13"):
+    case ("weakAttack"):
       $("#chosenStrongAttack").attr("disabled", "disabled");
+      editedAttack -= 1
+      checkWeak(evt);
       break;
 
-    case ("14"):
+    case ("weakDefense"):
       $("#chosenStrongDefense").attr("disabled", "disabled");
+      editedDefense -= 1
+      checkWeak(evt);
       break;
 
-    case ("15"):
+    case ("weakAgility"):
       $("#chosenStrongAgility").attr("disabled", "disabled");
+      editedAgility -= 1
+      checkWeak(evt);
       break;
 
-    case ("16"):
+    case ("weakVigor"):
       $("#chosenStrongVigor").attr("disabled", "disabled");
+      editedVigor -= 1
+      checkWeak(evt);
       break;
 
-    case ("5"):
-      $("#chosenGauntlet").removeAttr("disabled");
-      $("#chosenShield").removeAttr("disabled");
-      $("#chosenRing").removeAttr("disabled");
-      $("#chosenAmulet").removeAttr("disabled");
+    case ("sword"):
+      $(".accessories").removeAttr("disabled");
       $("#chosenGauntlet").attr("disabled", "disabled");
+      equippedWeapon = sword;
+      weaponIsEquipped = true;
       break;
 
 
-    case ("6"):
-      $("#chosenGauntlet").removeAttr("disabled");
-      $("#chosenShield").removeAttr("disabled");
-      $("#chosenRing").removeAttr("disabled");
-      $("#chosenAmulet").removeAttr("disabled");
+    case ("spear"):
+      $(".accessories").removeAttr("disabled");
       $("#chosenShield").attr("disabled", "disabled");
+      equippedWeapon = spear;
+      weaponIsEquipped = true;
       break;
 
-    case ("7"):
-      $("#chosenGauntlet").removeAttr("disabled");
-      $("#chosenShield").removeAttr("disabled");
-      $("#chosenRing").removeAttr("disabled");
-      $("#chosenAmulet").removeAttr("disabled");
+    case ("bow"):
+      $(".accessories").removeAttr("disabled");
       $("#chosenRing").attr("disabled", "disabled");
+      equippedWeapon = bow;
+      weaponIsEquipped = true;
       break;
 
-    case ("8"):
-      $("#chosenGauntlet").removeAttr("disabled");
-      $("#chosenShield").removeAttr("disabled");
-      $("#chosenRing").removeAttr("disabled");
-      $("#chosenAmulet").removeAttr("disabled");
+    case ("axe"):
+      $(".accessories").removeAttr("disabled");
       $("#chosenAmulet").attr("disabled", "disabled");
+      equippedWeapon = axe;
+      weaponIsEquipped = true;
       break;
 
-    case ("9"):
-      $("#chosenSword").removeAttr("disabled");
-      $("#chosenSpear").removeAttr("disabled");
-      $("#chosenBow").removeAttr("disabled");
-      $("#chosenAxe").removeAttr("disabled");
+    case ("gauntlet"):
+      $(".weapons").removeAttr("disabled");
       $("#chosenSword").attr("disabled", "disabled");
+      equippedAccessory = gauntlet;
+      accessoryIsEquipped = true;
       break;
 
-    case ("10"):
-      $("#chosenSword").removeAttr("disabled");
-      $("#chosenSpear").removeAttr("disabled");
-      $("#chosenBow").removeAttr("disabled");
-      $("#chosenAxe").removeAttr("disabled");
+    case ("shield"):
+      $(".weapons").removeAttr("disabled");
       $("#chosenSpear").attr("disabled", "disabled");
+      equippedAccessory = shield;
+      accessoryIsEquipped = true;
       break;
 
-    case ("11"):
-      $("#chosenSword").removeAttr("disabled");
-      $("#chosenSpear").removeAttr("disabled");
-      $("#chosenBow").removeAttr("disabled");
-      $("#chosenAxe").removeAttr("disabled");
+    case ("ring"):
+      $(".weapons").removeAttr("disabled");
       $("#chosenBow").attr("disabled", "disabled");
+      equippedAccessory = ring;
+      accessoryIsEquipped = true;
       break;
 
-    case ("12"):
-      $("#chosenSword").removeAttr("disabled");
-      $("#chosenSpear").removeAttr("disabled");
-      $("#chosenBow").removeAttr("disabled");
-      $("#chosenAxe").removeAttr("disabled");
+    case ("amulet"):
+      $(".weapons").removeAttr("disabled");
       $("#chosenAxe").attr("disabled", "disabled");
+      equippedAccessory = amulet;
+      accessoryIsEquipped = true;
       break;
 
     default:
@@ -414,53 +436,43 @@ var updateStat = function (params) {
   }
 
   switch (params.deselected) {
-    case ("1"):
+    case ("strongAttack"):
       $("#chosenWeakAttack").removeAttr("disabled");
       break;
 
-    case ("2"):
+    case ("strongDefense"):
       $("#chosenWeakDefense").removeAttr("disabled");
-
       break;
 
-    case ("3"):
+    case ("strongAgility"):
       $("#chosenWeakAgility").removeAttr("disabled");
-
       break;
 
-    case ("4"):
+    case ("strongVigor"):
       $("#chosenWeakVigor").removeAttr("disabled");
-
       break;
 
-    case ("13"):
+    case ("weakAttack"):
       $("#chosenStrongAttack").removeAttr("disabled");
-
       break;
 
-    case ("14"):
+    case ("weakDefense"):
       $("#chosenStrongDefense").removeAttr("disabled");
-
       break;
 
-    case ("15"):
+    case ("weakAgility"):
       $("#chosenStrongAgility").removeAttr("disabled");
-
       break;
 
-    case ("16"):
+    case ("weakVigor"):
       $("#chosenStrongVigor").removeAttr("disabled");
-
       break;
-
 
     default:
-
   }
 
-  //Check for enabled item
-
 }
+
 
 $('.charCreate').on('change', function (evt, params) {
 
@@ -468,65 +480,183 @@ $('.charCreate').on('change', function (evt, params) {
   console.log(evt)
   console.log(params);
 
-  updateStat(params);
+  updateStat(evt, params);
+
+  console.log(numberStrong);
+  console.log(numberWeak);
+
   $(".charCreate").trigger("chosen:updated");
 });
 
-$("#creatorSubmit").click(function () {
 
-//On submit weaponBonus += attribute
-//statDisplay = attribute + weaponBonus + accBonus
+$("#submit").on("click", function (event) {
+  event.preventDefault();
 
-  function creation(answers) {
-    /*
-     Runs the constructor and places the new player object into the variable `player`
-     Turns the offense and defense variables into integers as well with parseInt
-     */
+  console.log(event)
 
-    // armorClass = (10 + Math.floor((defense + agility) * .5));
-    //health = 5 * vigor;
-    //elements = [Weapon.element, Accessory.element];
+  switch (false) {
+    case ($("#name").val() != ""):
+      console.log("You must enter a name!")
+      break;
 
-    var playerCharacter = new Character(
+    case ($("#pic").val() != ""):
+      console.log("You must submit an image link!")
+      break;
+
+
+    case (numberStrong === numberWeak):
+      console.log("You must choose an equal number of Strengths and Weaknesses!")
+      break;
+
+    case (weaponIsEquipped):
+      console.log("You must equip a weapon!")
+      break;
+
+    case (accessoryIsEquipped):
+      console.log("You must equip an accessory!")
+      break;
+
+    default:
+      isValid = true
+  }
+
+  if (isValid == true) {
+    switch (equippedWeapon.attribute) {
+      case ("attack"):
+        editedAttack += 1;
+        break;
+
+      case ("defense"):
+        editedDefense += 1;
+        break;
+
+      case ("vigor"):
+        editedVigor += 1;
+        break;
+
+      case ("agility"):
+        editedAgility += 1;
+        break;
+
+      default:
+
+    }
+
+    switch (equippedAccessory.attribute) {
+      case ("attack"):
+        editedAttack += 1;
+        break;
+
+      case ("defense"):
+        editedDefense += 1;
+        break;
+
+      case ("vigor"):
+        editedVigor += 1;
+        break;
+
+      case ("agility"):
+        editedAgility += 1;
+        break;
+
+      default:
+
+    }
+
+    console.log(editedAttack);
+    console.log(editedDefense);
+    console.log(editedAgility);
+    console.log(editedVigor);
+
+    var creationAttributes = new Attributes((editedAttack), (editedDefense), (editedVigor), (editedAgility));
+
+    var answers = {
+      name: $("#name").val(),
+      pic: $("#pic").val(),
+      weapon: equippedWeapon,
+      accessory: equippedAccessory,
+      attributes: creationAttributes,
+      armorClass: (10 + Math.floor((creationAttributes.defense + creationAttributes.agility) * .5)),
+      health: (creationAttributes.vigor * 5),
+      elements: [equippedWeapon.element, equippedAccessory.element]
+    };
+    console.log(answers)
+
+    var newCharacter = new Character(
       answers.name,
       answers.pic,
-      answers.Attributes,
-      answers.Weapon,
-      answers.Accessory,
+      answers.attributes,
+      answers.weapon,
+      answers.accessory,
       answers.armorClass,
       answers.health,
       answers.elements,
     );
 
+    for (i = 0; i < newCharacter.elements.length; i++) {
+      $( "#buttonField" ).append( "<button type='button' id='" + newCharacter.elements[i] + "Button' class='btn btn-primary atkButton'>" + newCharacter.elements[i] + "</button>" );
+    }
+
+    chosenPlayer = newCharacter;
+    $("#pHealth").html(chosenPlayer.health);
+    gameInit();
+
+    $(".atkButton").click(function () {
+
+      if (roundCount == 1) {
+        chosenOpp.defElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
+      }
+    
+      if (tooSlow == true) {
+        roundCount++;
+        $("#round").html(roundCount)
+        tooSlow = false;
+      }
+      else { playerWent = true }
+    
+      chosenPlayer.atkElem = $(this).html();
+      $("#atkElem").html(chosenPlayer.atkElem);
+      chosenPlayer.clash(chosenOpp);
+      $("#oHealth").html(chosenOpp.health);
+      chosenPlayer.defElem = chosenPlayer.atkElem
+    
+    
+      playGame();
+    });
+    
   }
+
+  console.log(isValid);
+
+
+  /*
+    //if (valid === true) {
+  
+    $.post("/api/friends", answers, function (data) {
+  
+  
+      $("#match-name").text(data.name);
+      $("#match-img").attr("src", data.photo);
+      $("#results-modal").modal("toggle");
+  
+    });
+  
+    //}
+  
+    //else {}
+  */
 });
 
-//health = vigor * 5
-
-
-//Go into charCreate
-
-
-//chosenPlayer = new Character(answers.name, answers.pic, answers.playerAtr, answers.weapon, answers.accessory, answers.armorClass, answers.health, [answers.weapon.element, answers.accessory.element])
 
 
 //Test code, remove later
 
-ramosAtr = new Attributes(3, 3, 3, 3);
-davAtr = new Attributes(2, 4, 4, 2);
-
-Ramos = new Character("Ramos", "", ramosAtr, sword, shield, 13, 15, [sword.element, shield.element])
-Davriel = new Character("Davriel", "", davAtr, axe, ring, 14, 20, [axe.element, ring.element])
-
-chosenPlayer = Ramos;
-$("#pHealth").html(chosenPlayer.health);
-
+davAtr = new Attributes(3, 4, 4, 3);
+Davriel = new Character("Davriel", "", davAtr, axe, ring, 13, 20, [axe.element, ring.element])
 chosenOpp = Davriel;
 $("#oHealth").html(chosenOpp.health);
 
 //End Test Code
-
-
 
 
 
@@ -536,32 +666,8 @@ gameInit = function () {
   //Assign Opponent
   $("#round").html(roundCount)
   playGame();
-  //Add Generate Buttons function
 }
 
-gameInit();
-
-$(".atkButton").click(function () {
-
-  if (roundCount == 1) {
-    defElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
-  }
-
-  if (tooSlow == true) {
-    roundCount++;
-    $("#round").html(roundCount)
-    tooSlow = false;
-  }
-  else { playerWent = true }
-
-  atkElem = $(this).html();
-  $("#atkElem").html(atkElem);
-  chosenPlayer.clash(chosenOpp);
-  defElem = atkElem;
-
-  $("#oHealth").html(chosenOpp.health);
-  playGame();
-});
 
 
 
