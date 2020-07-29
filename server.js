@@ -610,6 +610,7 @@ $("#submit").on("click", function (event) {
 
     chosenPlayer = newCharacter;
     $("#pHealth").html(chosenPlayer.health);
+    $("#playerPortrait").attr("src", chosenPlayer.pic);
     gameInit();
 
     $(".atkButton").click(function () {
@@ -663,8 +664,9 @@ $("#submit").on("click", function (event) {
 //Test code, remove later
 
 davAtr = new Attributes(3, 4, 4, 3);
-Davriel = new Character("Davriel", "", davAtr, axe, ring, 13, 20, [axe.element, ring.element])
-chosenOpp = Davriel;
+Death = new Character("Death", "https://art.pixilart.com/98bb7b11fc00cf1.gif", davAtr, axe, ring, 13, 20, [axe.element, ring.element])
+chosenOpp = Death;
+$("#opponentPortrait").attr("src", chosenOpp.pic);
 $("#oHealth").html(chosenOpp.health);
 
 //End Test Code
