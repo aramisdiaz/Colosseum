@@ -30,3 +30,19 @@
     margin-right: 10%;
     width: 30%;
   }
+
+#playerPortrait {
+    height: auto;
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 30%;
+  }
+
+
+#opponentPortrait {
+  height: auto;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 30%;
+  transform: scaleX(-1);
+}
