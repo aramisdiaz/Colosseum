@@ -1,39 +1,70 @@
-// require express npm package and burger.js model
-var express = require("express");
-var burger = require("../models/burger.js");
-
-// set up express router
+var express = require('express');
 var router = express.Router();
+var colosseum = require('../models/colosseum.js');
 
-// get route for burgers/main page
-router.get("/", function(req, res) {
-	// using select all burger model to call mysql for getting all info
-	burger.selectAll(function(burgerInfo) {
-		// sends the callback info to index handlebars in an object with property burgers
-		res.render("index", {burgers: burgerInfo});
-	});
+router.get('/', function (req, res) 
+{
+  res.redirect('/index');
 });
 
-// post route for new burgers
-router.post("/burgers/new", function(req, res) {
-	// insert burger function from model with req body as burger name and call back 
-	// the data to log and redirect back home
-	burger.insertOne(req.body.burger_name, function(data) {
-		console.log(data);
-		res.redirect("/");
-	});
+router.get('/index', function (req, res) 
+{
+  colosseum.selectAllAttributes(function(data) 
+  {
+    console.log(data)
+    var contestantAttributeArray = Object.values(JSON.parse(JSON.stringify(data)))
+    
+    var hbsObject = { colosseum: data };
+    res.render('index', hbsObject);
+  });
+
+
+
 });
 
-// put route for updated burger
-router.put("/burgers/:id", function(req, res) {
-	// update with req params id and call back with data based on model update method
-	burger.updateOne(req.params.id, function(data) {
-		// log data
-		console.log(data);
-		// send back success status
-		res.sendStatus(200);
-	});
+router.get('/index', function (req, res) 
+{
+    colosseum.selectAllContestants(function(data) 
+  {
+    console.log(data)
+    var hbsObject = { colosseum: data };
+    res.render('index', hbsObject);
+  });
+  
+
 });
 
-// export the router
+router.get('/index', function (req, res) 
+{
+  colosseum.selectChamp(function(data) 
+  {
+    var hbsObject = { colosseum: data };
+    res.render('index', hbsObject);
+  });
+
+});
+
+router.post('/character/create', function (req, res) 
+{
+  colosseum.insertNewCharacter(req.body.character_name, function() 
+  {
+    res.redirect('/index');
+  });
+});
+
+router.post('/character/newchamp/:id', function (req, res) 
+{
+  colosseum.updateNewChamp(req.params.id, function() 
+  {
+    res.redirect('/index');
+  });
+});
+router.post('/character/oldchamp/:id', function (req, res) 
+{
+  colosseum.updateDethroned(req.params.id, function() 
+  {
+    res.redirect('/index');
+  });
+});
+
 module.exports = router;
