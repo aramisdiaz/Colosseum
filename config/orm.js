@@ -17,14 +17,14 @@ var orm =
 		});
 	},
 
-	insertNewCharacter: function (character_name, callback) {
+	insertNewCharacter: function (character_name, pic, attributes_id, weapon_id, accessory_id, callback) {
 		connection.query('INSERT INTO characters SET ?',
 			{
 				character_name: character_name,
 				pic: pic,
+				attributes_id: attributes_id,
 				weapon_id: weapon_id,
 				accessory_id: accessory_id,
-				attribute_id: attribute_id,
 				champ: false,
 				
 			}, function (err, result) {

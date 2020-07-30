@@ -19,9 +19,25 @@ var colosseum =
     });
   },
 
-  insertNewCharacter: function(character_name, callback)
+  insertNewCharacter: function(character_name, pic, attributes_id, weapon_id, accessory_id, callback)
   {
-    orm.insertNewCharacter(character_name, function(res)
+    orm.insertNewCharacter(character_name, pic, attributes_id, weapon_id, accessory_id, function(res)
+    {
+      callback(res);
+    });
+  },
+
+  insertNewAttributes: function(attack, defense, vigor, agility, callback)
+  {
+    orm.insertNewAttributes(attack, defense, vigor, agility, function(res)
+    {
+      callback(res);
+    });
+  },
+
+  selectCharacter: function(character_id, callback)
+  {
+    orm.selectCharacter(character_id, function(res)
     {
       callback(res);
     });

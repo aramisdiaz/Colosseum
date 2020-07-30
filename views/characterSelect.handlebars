@@ -1,0 +1,21 @@
+ <div class="row">
+  
+       <h3 class="submitFont">Select Your Character!</h3>
+      <div id="characterSelect">
+
+        {{#each colosseum}}
+          {{#unless champ}}
+          <form action="character/select/{{id}}" method="GET">
+            <div class="input-group">
+              <li class="form-control">{{id}}. {{character_name}}</li>
+                <span class="input-group-btn">
+                  <button class="btn btn-danger charSelect-button" type="submit">Select Character!</button>
+                </span>
+            </div>
+          </form>
+          {{/unless}}
+        {{/each}}
+      </div>
+    
+  
+</div>

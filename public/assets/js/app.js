@@ -500,7 +500,7 @@ $('.charCreate').on('change', function (evt, params) {
 });
 
 
-$("#submit").on("click", function (event) {
+$("#gameStart").on("click", function (event) {
   event.preventDefault();
 
   console.log(event)
@@ -607,39 +607,39 @@ $("#submit").on("click", function (event) {
       answers.elements,
     );
 
-    for (i = 0; i < newCharacter.elements.length; i++) {
-      $( "#buttonField" ).append( "<button type='button' id='" + newCharacter.elements[i] + "Button' class='btn btn-primary atkButton'>" + newCharacter.elements[i] + "</button>" );
-    }
-
     chosenPlayer = newCharacter;
+    for (i = 0; i < chosenPlayer.elements.length; i++) {
+      $( "#buttonField" ).append( "<button type='button' id='" + chosenPlayer.elements[i] + "Button' class='btn btn-primary atkButton'>" + newCharacter.elements[i] + "</button>" );
+    }
     $("#pHealth").html(chosenPlayer.health);
     $("#playerPortrait").attr("src", chosenPlayer.pic);
     gameInit();
 
-    $(".atkButton").click(function () {
+  }
 
-      if (roundCount == 1) {
+  $(".atkButton").click(function () {
+
+    if (roundCount == 1) {
         chosenOpp.defElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
-      }
-    
-      if (tooSlow == true) {
+    }
+  
+    if (tooSlow == true) {
         roundCount++;
         $("#round").html(roundCount)
         tooSlow = false;
-      }
-      else { playerWent = true }
-    
-      chosenPlayer.atkElem = $(this).html();
-      $("#atkElem").html(chosenPlayer.atkElem);
-      chosenPlayer.clash(chosenOpp);
-      $("#oHealth").html(chosenOpp.health);
-      chosenPlayer.defElem = chosenPlayer.atkElem
-    
-    
-      playGame();
-    });
-    
-  }
+    }
+    else { playerWent = true }
+  
+    chosenPlayer.atkElem = $(this).html();
+    $("#atkElem").html(chosenPlayer.atkElem);
+    chosenPlayer.clash(chosenOpp);
+    $("#oHealth").html(chosenOpp.health);
+    chosenPlayer.defElem = chosenPlayer.atkElem
+  
+  
+    playGame();
+
+  });
 
   console.log(isValid);
 
@@ -664,10 +664,13 @@ $("#submit").on("click", function (event) {
 
 
 
+
+
+
 //Test code, remove later
 
 davAtr = new Attributes(3, 4, 4, 3);
-Death = new Character("Death", "https://art.pixilart.com/98bb7b11fc00cf1.gif", davAtr, axe, ring, 13, 20, [axe.element, ring.element])
+Death = new Character("Death", "https://img.itch.zone/aW1nLzIxNzM5OTkuZ2lm/original/NvDD48.gif", davAtr, axe, ring, 13, 20, [axe.element, ring.element])
 chosenOpp = Death;
 $("#opponentPortrait").attr("src", chosenOpp.pic);
 $("#oHealth").html(chosenOpp.health);
