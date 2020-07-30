@@ -12,8 +12,7 @@ router.get('/index', function (req, res)
   colosseum.selectAllAttributes(function(data) 
   {
     console.log(data)
-    var contestantAttributeArray = Object.values(JSON.parse(JSON.stringify(data)))
-    
+    //var hbsObject = Object.values(JSON.parse(JSON.stringify(data)))
     var hbsObject = { colosseum: data };
     res.render('index', hbsObject);
   });
@@ -22,33 +21,75 @@ router.get('/index', function (req, res)
 
 });
 
-router.get('/index', function (req, res) 
+
+router.get('/characterCreate', function (req, res) 
+{
+  colosseum.selectAllAttributes(function(data) 
+  {
+    console.log(data)
+    //var hbsObject = Object.values(JSON.parse(JSON.stringify(data)))
+    var hbsObject = { colosseum: data };
+    res.render('characterCreate', hbsObject);
+  });
+
+
+
+});
+
+router.get('/characterSelect', function (req, res) 
 {
     colosseum.selectAllContestants(function(data) 
   {
     console.log(data)
     var hbsObject = { colosseum: data };
-    res.render('index', hbsObject);
+    res.render('characterSelect', hbsObject);
   });
   
 
 });
 
-router.get('/index', function (req, res) 
+router.get('/battle', function (req, res) 
 {
-  colosseum.selectChamp(function(data) 
+  colosseum.selectAllContestants(function(data) 
   {
+    console.log(data)
     var hbsObject = { colosseum: data };
-    res.render('index', hbsObject);
+    res.render('battle', hbsObject);
   });
 
 });
 
-router.post('/character/create', function (req, res) 
+router.get('/finalBattle', function (req, res) 
 {
-  colosseum.insertNewCharacter(req.body.character_name, function() 
+  colosseum.selectChamp(function(data) 
   {
-    res.redirect('/index');
+    var hbsObject = { colosseum: data };
+    res.render('battle', hbsObject);
+  });
+
+});
+
+router.post('/characterCreateSubmit', function (req, res) 
+{
+  console.log(req.params)
+
+  
+  /*
+  colosseum.insertNewAttributes(attack, defense, vigor, agility)
+  colosseum.insertNewCharacter(req.body.character_name, req.body.pic, req.body.attributes_id, req.body.weapon_id, req.body.accessory_id, function() 
+  {
+    console.log(req.body)
+    res.redirect('/battle');
+  });*/
+});
+
+
+router.get('/character/select/:id', function (req, res) 
+{
+  colosseum.selectCharacter(function(data)
+  {
+    var hbsObject = { colosseum: data };
+    res.render('index', hbsObject);
   });
 });
 
