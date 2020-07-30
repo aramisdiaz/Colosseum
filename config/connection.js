@@ -2,16 +2,18 @@
 require('dotenv').config()
 var mysql = require("mysql");
 var connection;
-
 // if jaws db is present, connect to jaws db, otherwise connect to local mysql db
 if (process.env.JAWSDB_URL) {
-	connection = mysql.createConnection(process.env.JAWSDB_URL);
+	connection = mysql.createConnection(
+		process.env.JAWSDB_URL,
+		{multipleStatements: true});
 } else {
 	connection = mysql.createConnection({
 		host: process.env.host, 
 		user: process.env.user,
 		password: process.env.password,
 		database: process.env.database,
+		multipleStatements: true
 	});
 };
 

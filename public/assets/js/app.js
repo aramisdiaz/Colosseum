@@ -1,3 +1,5 @@
+
+var newCharacter;
 var d20roll;
 var d8roll;
 var toHit;
@@ -11,17 +13,26 @@ var roundCount = 1;
 var numberStrong = 0;
 var numberWeak = 0;
 var isValid = false;
+var battleCount = 0;
+var damageTaken = 0;
 
 var weaponIsEquipped = false;
 var accessoryIsEquipped = false;
 var equippedWeapon;
 var equippedAccessory;
+var newOpponentWeapon;
+var newOpponentAccessory;
 
 var editedAttack = 3;
 var editedDefense = 3;
 var editedVigor = 3;
 var editedAgility = 3;
 
+
+$("#bannerField").hide();
+$("#battleField").hide();
+$("#buttonField").hide();
+$("#healthField").hide();
 
 
 function Attributes(attack, defense, vigor, agility) {
@@ -31,28 +42,30 @@ function Attributes(attack, defense, vigor, agility) {
   this.agility = agility;
 }
 
-function Weapon(name, attribute, element) {
+function Weapon(id, name, attribute, element) {
+  this.id = id;
   this.name = name;
   this.attribute = attribute;
   this.element = element
 }
 
-function Accessory(name, attribute, element) {
+function Accessory(id, name, attribute, element) {
+  this.id = id;
   this.name = name;
   this.attribute = attribute;
   this.element = element
 }
 
 //Make into a table in MYSQL
-var sword = new Weapon("sword", "attack", "Fire");
-var bow = new Weapon("bow", "agility", "Air");
-var spear = new Weapon("spear", "defense", "Water");
-var axe = new Weapon("axe", "vigor", "Earth");
+var sword = new Weapon("1", "sword", "attack", "Fire");
+var bow = new Weapon("4", "bow", "agility", "Air");
+var spear = new Weapon("2", "spear", "defense", "Water");
+var axe = new Weapon("3", "axe", "vigor", "Earth");
 
-var gauntlet = new Accessory("gauntlet", "attack", "Fire");
-var ring = new Accessory("ring", "agility", "Air");
-var shield = new Accessory("shield", "defense", "Water");
-var amulet = new Accessory("amulet", "vigor", "Earth");
+var gauntlet = new Accessory("1", "gauntlet", "attack", "Fire");
+var ring = new Accessory("4", "ring", "agility", "Air");
+var shield = new Accessory("2", "shield", "defense", "Water");
+var amulet = new Accessory("3", "amulet", "vigor", "Earth");
 
 
 function d20() {
@@ -75,6 +88,8 @@ function Character(name, pic, attributes, weapon, accessory, armorClass, health,
   this.elements = elements;
   this.atkElem = atkElem;
   this.defElem = defElem;
+
+  this.maxHealth = health;
 
 
   this.rollInitiative = function (opponentCharacter) {
@@ -151,7 +166,8 @@ function Character(name, pic, attributes, weapon, accessory, armorClass, health,
 
 
 
-    console.log(this.name + " attacks with " + this.atkElem);
+    $("#bannerField").html(this.name + " attacks with " + this.atkElem);
+    console.log(this.name + " attacks with " + this.atkElem)
     console.log("--------------------------------------")
 
     console.log(opponentCharacter.name + " defends with " + opponentCharacter.defElem);
@@ -163,7 +179,8 @@ function Character(name, pic, attributes, weapon, accessory, armorClass, health,
     console.log("Resistance = " + res)
 
     toHit = (d20roll + this.attributes.attack);
-    console.log(this.name + " rolls " + toHit + " to hit!")
+    $("#bannerField").html(this.name + " rolls " + toHit + " to hit!")
+    console.log(this.name + " rolls " + toHit + " to hit!");
 
 
     if (toHit >= armorClass) {
@@ -175,33 +192,39 @@ function Character(name, pic, attributes, weapon, accessory, armorClass, health,
         case (d20roll == 20 && strike >= 1):
           damage = Math.ceil((strike * res * 2));
           opponentCharacter.health -= damage;
+          damageTaken += damage;
           console.log("A critical hit!")
           break;
 
         case (d20roll == 20 && strike < 1):
           damage = Math.ceil((1 * res * 2));
           opponentCharacter.health -= damage;
+          damageTaken += damage;
           console.log("A critical hit!")
           break;
 
         case (d20roll !== 20 && strike >= 1):
           damage = Math.ceil((strike * res));
           opponentCharacter.health -= damage;
+          damageTaken += damage;
           break;
 
         default:
           damage = Math.ceil(1 * res);
           opponentCharacter.health -= damage;
+          damageTaken += damage;
       }
 
       $("#damage").html(damage)
       $("#defender").html(opponentCharacter.name)
+      $("#bannerField").html(opponentCharacter.name + " takes " + damage + " damage!")
       console.log(opponentCharacter.name + " takes " + damage + " damage!")
       console.log("--------------------------------------")
     }
 
     else {
       $("#damage").html(0)
+      $("#bannerField").html(this.name + "'s attack misses!")
       console.log(this.name + "'s attack misses!")
       console.log("--------------------------------------")
     }
@@ -217,15 +240,17 @@ function playGame() {
 
     case (chosenPlayer.health <= 0):
       $(".atkButton").prop('disabled', true);
-      console.log("You lose!")
+      $("#bannerField").html("You lose!")
       //Game Over Screen
 
       break;
 
     case (chosenOpp.health <= 0):
       $(".atkButton").prop('disabled', true);
-      console.log("You win!")
+      $("#bannerField").html("You win!")
       //Next Round Function
+      battleCount += 1;
+      nextRound();
 
       break;
 
@@ -239,6 +264,7 @@ function playGame() {
       $("#atkElem").html(chosenOpp.atkElem);
       chosenOpp.defElem = chosenOpp.atkElem;
 
+      $("#bannerField").html(chosenOpp.name + " is attacking with " + chosenOpp.atkElem + "...")
       console.log(chosenOpp.name + " is attacking with " + chosenOpp.atkElem + "...")
       console.log("--------------------------------------")
 
@@ -246,9 +272,9 @@ function playGame() {
 
       setTimeout(function () {
         chosenOpp.clash(chosenPlayer);
-        $("#pHealth").html(chosenPlayer.health);
+        $("#playerHealthButton").html(chosenPlayer.health);
         roundCount++;
-        $("#round").html(roundCount)
+        $("#roundField").html("Round: " + roundCount)
         playGame();
 
       }, 3000);
@@ -277,7 +303,7 @@ function playGame() {
 
       setTimeout(function () {
         chosenOpp.clash(chosenPlayer);
-        $("#pHealth").html(chosenPlayer.health);
+        $("#playerHealthButton").html(chosenPlayer.health);
         $(".atkButton").prop('disabled', false);
       }, 3000);
 
@@ -295,11 +321,15 @@ function playGame() {
   }
   if (chosenPlayer.health <= 0) {
     $(".atkButton").prop('disabled', true);
-    console.log("You lose!")}
-  
-    else if (chosenOpp.health <= 0) {
+    console.log("You lose!")
+  }
+
+  else if (chosenOpp.health <= 0) {
     $(".atkButton").prop('disabled', true);
-    console.log("You win!")}
+    console.log("You win!")
+    battleCount += 1;
+    nextRound();
+  }
 }
 
 $(".charCreate").chosen({
@@ -487,23 +517,23 @@ var updateStat = function (evt, params) {
 
 $('.charCreate').on('change', function (evt, params) {
 
-  console.log(evt.currentTarget.value);
-  console.log(evt)
-  console.log(params);
+
 
   updateStat(evt, params);
+  $("#attackDisplay").html(editedAttack);
+  $("#defenseDisplay").html(editedDefense);
+  $("#vigorDisplay").html(editedVigor);
+  $("#agilityDisplay").html(editedAgility);
 
-  console.log(numberStrong);
-  console.log(numberWeak);
 
   $(".charCreate").trigger("chosen:updated");
 });
 
 
+
+
 $("#gameStart").on("click", function (event) {
   event.preventDefault();
-
-  console.log(event)
 
   switch (false) {
     case ($("#name").val() != ""):
@@ -532,8 +562,14 @@ $("#gameStart").on("click", function (event) {
   }
 
   if (isValid == true) {
-    
-    $("#submit").hide();
+
+    $("#creationMenu").hide();
+    $("#bannerField").show();
+    $("#battleField").show();
+    $("#buttonField").show();
+    $("#healthField").show();
+
+
 
     switch (equippedWeapon.attribute) {
       case ("attack"):
@@ -577,10 +613,7 @@ $("#gameStart").on("click", function (event) {
 
     }
 
-    console.log(editedAttack);
-    console.log(editedDefense);
-    console.log(editedAgility);
-    console.log(editedVigor);
+
 
     var creationAttributes = new Attributes((editedAttack), (editedDefense), (editedVigor), (editedAgility));
 
@@ -594,9 +627,9 @@ $("#gameStart").on("click", function (event) {
       health: (creationAttributes.vigor * 5),
       elements: [equippedWeapon.element, equippedAccessory.element]
     };
-    console.log(answers)
+    
 
-    var newCharacter = new Character(
+    newCharacter = new Character(
       answers.name,
       answers.pic,
       answers.attributes,
@@ -608,10 +641,14 @@ $("#gameStart").on("click", function (event) {
     );
 
     chosenPlayer = newCharacter;
+
+    $("#healthField").append("<button type='button' id='playerHealthButton' class='btn btn-success'>" + chosenPlayer.health + "</button>")
+
     for (i = 0; i < chosenPlayer.elements.length; i++) {
-      $( "#buttonField" ).append( "<button type='button' id='" + chosenPlayer.elements[i] + "Button' class='btn btn-primary atkButton'>" + newCharacter.elements[i] + "</button>" );
+      $("#buttonField").append("<button type='button' id='" + chosenPlayer.elements[i] + "Button' class='btn btn-primary atkButton'>" + chosenPlayer.elements[i] + "</button>");
     }
-    $("#pHealth").html(chosenPlayer.health);
+
+    $("#playerHealthButton").html(chosenPlayer.health);
     $("#playerPortrait").attr("src", chosenPlayer.pic);
     gameInit();
 
@@ -620,28 +657,28 @@ $("#gameStart").on("click", function (event) {
   $(".atkButton").click(function () {
 
     if (roundCount == 1) {
-        chosenOpp.defElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
+      chosenOpp.defElem = chosenOpp.elements[Math.floor(Math.random() * 2)];
     }
-  
+
     if (tooSlow == true) {
-        roundCount++;
-        $("#round").html(roundCount)
-        tooSlow = false;
+      roundCount++;
+      $("#roundField").html("Round: " + roundCount)
+      tooSlow = false;
     }
     else { playerWent = true }
-  
+
     chosenPlayer.atkElem = $(this).html();
     $("#atkElem").html(chosenPlayer.atkElem);
     chosenPlayer.clash(chosenOpp);
-    $("#oHealth").html(chosenOpp.health);
+    $("#opponentHealthButton").html(chosenOpp.health);
     chosenPlayer.defElem = chosenPlayer.atkElem
-  
-  
+
+
     playGame();
 
   });
 
-  console.log(isValid);
+
 
 
   /*
@@ -665,26 +702,139 @@ $("#gameStart").on("click", function (event) {
 
 
 
+var contestants = []
 
 
-//Test code, remove later
 
-davAtr = new Attributes(3, 4, 4, 3);
-Death = new Character("Death", "https://img.itch.zone/aW1nLzIxNzM5OTkuZ2lm/original/NvDD48.gif", davAtr, axe, ring, 13, 20, [axe.element, ring.element])
-chosenOpp = Death;
-$("#opponentPortrait").attr("src", chosenOpp.pic);
-$("#oHealth").html(chosenOpp.health);
+
+for (i = 0; i < 4; i++) {
+
+  var selector = Math.ceil(Math.random() * Math.ceil(7));
+
+  switch ($("#" + selector + "Weapon").html()) {
+
+    case ("1"):
+      newOpponentWeapon = sword
+      break
+
+    case ("2"):
+      newOpponentWeapon = spear
+      break
+
+    case ("3"):
+      newOpponentWeapon = axe
+      break
+
+    case ("4"):
+      newOpponentWeapon = bow
+      break
+
+    default:
+
+  }
+
+  switch ($("#" + selector + "Accessory").html()) {
+
+    case ("1"):
+      newOpponentAccessory = gauntlet
+      break
+
+    case ("2"):
+      newOpponentAccessory = shield
+      break
+
+    case ("3"):
+      newOpponentAccessory = amulet
+      break
+
+    case ("4"):
+      newOpponentAccessory = ring
+      break
+
+    default:
+
+  }
+
+
+  newAttributes = new Attributes(parseInt($("#" + selector + "Attack").html()), parseInt($("#" + selector + "Defense").html()), parseInt($("#" + selector + "Vigor").html()), parseInt($("#" + selector + "Agility").html()))
+
+  newOpponent = new Character(
+    $("#" + selector + "Name").html(),
+    $("#" + selector + "Pic").html(),
+    newAttributes,
+    newOpponentWeapon,
+    newOpponentAccessory,
+    (10 + ((parseInt($("#" + selector + "Defense").html()) + parseInt($("#" + selector + "Agility").html())) * 0.5)),
+    (parseInt($("#" + selector + "Vigor").html()) * 5),
+    [newOpponentWeapon.element, newOpponentAccessory.element]
+  )
+
+  contestants.push(newOpponent)
+
+}
+console.log(contestants)
+
+/*
+  davAtr = new Attributes(3, 4, 4, 3);
+  Death = new Character("Death", "https://img.itch.zone/aW1nLzIxNzM5OTkuZ2lm/original/NvDD48.gif", davAtr, axe, ring, 13, 20, [axe.element, ring.element])
+  chosenOpp = Death;*/
+
+
+//$("#opponentHealthButton").html(chosenOpp.health);
 
 //1.Attack 2.Defense 3.Vigor 4.Agility
 //End Test Code
 
+nextRound = function () {
+
+  if (battleCount < 4) {
+    $("#roundField").html("Round: " + roundCount)
+    roundCount = 1;
+
+    chosenPlayer.health = chosenPlayer.maxHealth
+    chosenOpp = contestants[battleCount];
+    $("#playerHealthButton").html(chosenPlayer.health);
+    $("#opponentHealthButton").html(chosenOpp.health);
+    $("#opponentPortrait").attr("src", chosenOpp.pic);
+    playGame();
+  }
+
+  else if (battleCount = 4) {
+    $("#roundField").html("Round: " + roundCount)
+    roundCount = 1;
+
+    selector = 8
+    newAttributes = new Attributes(parseInt($("#" + selector + "Attack").html()), parseInt($("#" + selector + "Defense").html()), parseInt($("#" + selector + "Vigor").html()), parseInt($("#" + selector + "Agility").html()))
+
+    finalBoss = new Character(
+      $("#" + selector + "Name").html(),
+      $("#" + selector + "Pic").html(),
+      newAttributes,
+      newOpponentWeapon,
+      newOpponentAccessory,
+      (10 + ((parseInt($("#" + selector + "Defense").html()) + parseInt($("#" + selector + "Agility").html())) * 0.5)),
+      (parseInt($("#" + selector + "Vigor").html()) * 5),
+      [newOpponentWeapon.element, newOpponentAccessory.element]
+    )
+
+    chosenPlayer.health = chosenPlayer.maxHealth
+    chosenOpp = finalBoss;
+    $("#playerHealthButton").html(chosenPlayer.health);
+    $("#opponentHealthButton").html(chosenOpp.health);
+    $("#opponentPortrait").attr("src", chosenOpp.pic);
+    playGame();
+  }
+
+}
+
 
 
 // Round 1
-
 gameInit = function () {
-  //Assign Opponent
-  $("#round").html(roundCount)
+  chosenOpp = contestants[0]
+  $("#opponentPortrait").attr("src", chosenOpp.pic);
+  $("#healthField").append("<button type='button' id='opponentHealthButton' class='btn btn-success'>" + chosenOpp.health + "</button>")
+  $("#roundField").html("Round: " + roundCount)
   playGame();
 }
 

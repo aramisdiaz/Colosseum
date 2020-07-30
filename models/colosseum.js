@@ -19,6 +19,7 @@ var colosseum =
     });
   },
 
+  
   insertNewCharacter: function(character_name, pic, attributes_id, weapon_id, accessory_id, callback)
   {
     orm.insertNewCharacter(character_name, pic, attributes_id, weapon_id, accessory_id, function(res)

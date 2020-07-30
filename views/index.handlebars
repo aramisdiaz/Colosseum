@@ -1,14 +1,113 @@
-<div class="row">
-  <div class="form-group col-md-6">
-    <form action="characterCreate" method="GET">
-      <button class="btn btn-danger devour-button" type="submit">Create a Character!</button>
-    </form>
-  </div>
+<body>
 
-  <div class="form-group col-md-6">
-    <form action="characterSelect" method="GET">
-      <button class="btn btn-danger devour-button" type="submit">Select an existing Character!</button>
-    </form>
-  </div>
 
-</div>
+  <main>
+    <div class="cd-index cd-main-content">
+      <div>
+        <header>Colosseum</header>
+        <nav>
+          <a href="assets/rules.html">Rules</a>
+        </nav>
+
+      </div>
+      <br><br><br><br><br>
+
+      <form class="row" id="roundField"></form>
+      <br>
+      <form class="row" id="bannerField"></form>
+
+      <form id="creationMenu" action="characterCreateSubmit" method="POST">
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-default">Character Name:</span>
+          </div>
+          <input id="name" type="text" class="form-control" aria-label="Character Name"
+            aria-describedby="inputGroup-sizing-default">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-default">Character Gif Link:</span>
+          </div>
+          <input id="pic" type="text" class="form-control" aria-label="Character Gif Link"
+            aria-describedby="inputGroup-sizing-default">
+        </div>
+        <select class="charCreate" id="chosenStrongAttribute" multiple="true"
+          data-placeholder="Select Up to Two Specialties" style="width:200px;">
+          <option id="chosenStrongAttack" value="strongAttack">Attack</option>
+          <option id="chosenStrongDefense" value="strongDefense">Defense</option>
+          <option id="chosenStrongAgility" value="strongAgility">Agility</option>
+          <option id="chosenStrongVigor" value="strongVigor">Vigor</option>
+        </select>
+        <select class="charCreate" id="chosenWeakAttribute" multiple="true" data-placeholder="Select Weaknesses"
+          style="width:200px;">
+          <option id="chosenWeakAttack" value="weakAttack">Attack</option>
+          <option id="chosenWeakDefense" value="weakDefense">Defense</option>
+          <option id="chosenWeakAgility" value="weakAgility">Agility</option>
+          <option id="chosenWeakVigor" value="weakVigor">Vigor</option>
+        </select>
+        <select class="charCreate items" id="chosenWeapon" data-placeholder="Select Your Weapon" style="width:200px;">
+          <option id="chosenNullWeapon" value="0"></option>
+          <option class="weapons" id="chosenSword" value="sword">Sword</option>
+          <option class="weapons" id="chosenSpear" value="spear">Spear</option>
+          <option class="weapons" id="chosenBow" value="bow">Bow</option>
+          <option class="weapons" id="chosenAxe" value="axe">Axe</option>
+        </select>
+        <select class="charCreate items" id="chosenAccessory" data-placeholder="Select Your Accessory"
+          style="width:200px;">
+          <option id="chosenNullAccessory" value="00"></option>
+          <option class="accessories" id="chosenGauntlet" value="gauntlet">Gauntlet</option>
+          <option class="accessories" id="chosenShield" value="shield">Shield</option>
+          <option class="accessories" id="chosenRing" value="ring">Ring</option>
+          <option class="accessories" id="chosenAmulet" value="amulet">Amulet</option>
+        </select>
+        <br><br>
+
+
+        <button class="btn btn-primary" id="gameStart" type="submit">Start</button>
+      </form>
+
+      <br><br>
+
+      <form class="row" id="battleField">
+        <img id="playerPortrait" class="portraitField"><img id="opponentPortrait" class="portraitField">
+      </form>
+
+      <form class="row" id="healthField"></form>
+      <form class="row" id="buttonField"></form>
+
+  </main>
+
+  {{#each colosseum}}
+
+  <form action="battle/{{id}}" class="contestantContainer" id="contestant{{character_name}}" value="{{id}}"
+    method="POST" hidden="true">
+
+    <!---->
+
+    <div class="contestantStats" hidden="true">
+      <li value="{{id}}" id="{{id}}Id">{{id}}</li>
+      <li value="{{id}}" id="{{id}}Name">{{character_name}}</li>
+      <li value="{{id}}" id="{{id}}Pic">{{pic}}</li>
+      <li value="{{id}}" id="{{id}}Weapon">{{weapon_id}}</li>
+      <li value="{{id}}" id="{{id}}Accessory">{{accessory_id}}</li>
+      <li value="{{id}}" id="{{id}}Attack">{{attack}}</li>
+      <li value="{{id}}" id="{{id}}Defense">{{defense}}</li>
+      <li value="{{id}}" id="{{id}}Vigor">{{vigor}}</li>
+      <li value="{{id}}" id="{{id}}Agility">{{agility}}</li>
+      <li value="{{id}}" id="{{id}}Champ">{{champ}}</li>
+
+    </div>
+  </form>
+
+  {{/each}}
+
+
+  <!--
+  <div class="cd-cover-layer"></div>
+  <div class="cd-loading-bar"></div>
+-->
+
+</body>
+
+</html>
