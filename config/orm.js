@@ -5,13 +5,7 @@ var orm =
 
 
 	selectAllContestants: function (callback) {
-		/*
-		SELECT Customers.CustomerName, Orders.OrderID
-		FROM characters
-		FULL OUTER JOIN weapon ON characters.weapon_id=weapon.id
-		FULL OUTER JOIN accessory ON characters.accessory_id=accessory.id
-		ORDER BY characters.id;
-		*/
+
 
 		connection.query('SELECT * FROM characters INNER JOIN attributes USING (id);', function (err, result) {
 			if (err) throw err;
