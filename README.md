@@ -4,11 +4,11 @@
 
             The game is a turn based fighting game.
 
-            Much like a traditional turn based strategy game, players take turns when playing and are able to perform a
-            certain set of actions on their turn.
+            Much like a traditional turn based strategy game, players take turns when playing and are able to
+            perform a certain set of actions on their turn.
 
-            Once a person sees the main menu they are able to choose between several weapons and trinkets, before they
-            can proceed to the main gameplay.
+            Once a person sees the main menu they are able to choose between several weapons and trinkets,
+            before they can proceed to the main gameplay.
 
             The weapons and weapon attacks are broken down into elemental damage categories.
 
@@ -19,9 +19,9 @@
 
             Phlegestos, The Sword Of Flames (Boosts Attack) Fire
 
-            It is unknown who forged the great Sword of Flames. Some say Hephaestus, others the Dark Lord himself. What
-            is known is the devastating abilities it has and its devouring flame that burns opponents to cinders. Out of
-            all the weapons, this is truly the hardest to master, let alone wield.
+            It is unknown who forged the great Sword of Flames. Some say Hephaestus, others the Dark Lord himself.
+            What is known is the devastating abilities it has and its devouring flame that burns opponents to cinders.
+            Out of all the weapons, this is truly the hardest to master, let alone wield.
 
 
             Tidus, The Spear Of Ocean (Boosts Defense) Water
