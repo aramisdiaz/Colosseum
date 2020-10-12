@@ -6,10 +6,10 @@ var connection;
 if (process.env.JAWSDB_URL) {
 	connection = mysql.createConnection(
 		process.env.JAWSDB_URL,
-		{multipleStatements: true});
+		{ multipleStatements: true });
 } else {
 	connection = mysql.createConnection({
-		host: process.env.host, 
+		host: process.env.host,
 		user: process.env.user,
 		password: process.env.password,
 		database: process.env.database,
@@ -18,7 +18,7 @@ if (process.env.JAWSDB_URL) {
 };
 
 // connect to database, throw error if error, otherwise log the connection id
-connection.connect(function(err) {
+connection.connect(function (err) {
 	if (err) {
 		console.error("error connecting to database: " + err.stack);
 		return;

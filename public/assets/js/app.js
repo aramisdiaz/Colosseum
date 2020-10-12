@@ -1,32 +1,35 @@
 
-var newCharacter;
-var d20roll;
-var d8roll;
-var toHit;
-var chosenPlayer;
-var chosenOpp;
-var playerWent;
-var playerInitiative;
-var oppInitiative;
-var tooSlow;
-var roundCount = 1;
-var numberStrong = 0;
-var numberWeak = 0;
-var isValid = false;
-var battleCount = 0;
-var damageTaken = 0;
+let newCharacter;
+let d20roll;
+let d8roll;
+let toHit;
+let chosenPlayer;
+let chosenOpp;
+let playerWent;
+let playerInitiative;
+let oppInitiative;
+let tooSlow;
+let roundCount = 1;
+let numberStrong = 0;
+let numberWeak = 0;
+let isValid = false;
+let battleCount = 0;
+let damageTaken = 0;
+let res = 0;
+let strike = 0;
+let damage = 0;
 
-var weaponIsEquipped = false;
-var accessoryIsEquipped = false;
-var equippedWeapon;
-var equippedAccessory;
-var newOpponentWeapon;
-var newOpponentAccessory;
+let weaponIsEquipped = false;
+let accessoryIsEquipped = false;
+let equippedWeapon;
+let equippedAccessory;
+let newOpponentWeapon;
+let newOpponentAccessory;
 
-var editedAttack = 3;
-var editedDefense = 3;
-var editedVigor = 3;
-var editedAgility = 3;
+let editedAttack = 3;
+let editedDefense = 3;
+let editedVigor = 3;
+let editedAgility = 3;
 
 
 $("#bannerField").hide();
@@ -57,15 +60,15 @@ function Accessory(id, name, attribute, element) {
 }
 
 //Make into a table in MYSQL
-var sword = new Weapon("1", "sword", "attack", "Fire");
-var bow = new Weapon("4", "bow", "agility", "Air");
-var spear = new Weapon("2", "spear", "defense", "Water");
-var axe = new Weapon("3", "axe", "vigor", "Earth");
+let sword = new Weapon("1", "sword", "attack", "Fire");
+let bow = new Weapon("4", "bow", "agility", "Air");
+let spear = new Weapon("2", "spear", "defense", "Water");
+let axe = new Weapon("3", "axe", "vigor", "Earth");
 
-var gauntlet = new Accessory("1", "gauntlet", "attack", "Fire");
-var ring = new Accessory("4", "ring", "agility", "Air");
-var shield = new Accessory("2", "shield", "defense", "Water");
-var amulet = new Accessory("3", "amulet", "vigor", "Earth");
+let gauntlet = new Accessory("1", "gauntlet", "attack", "Fire");
+let ring = new Accessory("4", "ring", "agility", "Air");
+let shield = new Accessory("2", "shield", "defense", "Water");
+let amulet = new Accessory("3", "amulet", "vigor", "Earth");
 
 
 function d20() {
@@ -338,15 +341,15 @@ $(".charCreate").chosen({
 });
 
 
-var checkStrong = function (evt) {
+let checkStrong = function (evt) {
   numberStrong = evt.currentTarget.selectedOptions.length;
 }
 
-var checkWeak = function (evt) {
+let checkWeak = function (evt) {
   numberWeak = evt.currentTarget.selectedOptions.length;
 }
 
-var updateStat = function (evt, params) {
+let updateStat = function (evt, params) {
 
   switch (params.selected) {
 
@@ -615,9 +618,9 @@ $("#gameStart").on("click", function (event) {
 
 
 
-    var creationAttributes = new Attributes((editedAttack), (editedDefense), (editedVigor), (editedAgility));
+    let creationAttributes = new Attributes((editedAttack), (editedDefense), (editedVigor), (editedAgility));
 
-    var answers = {
+    let answers = {
       name: $("#name").val(),
       pic: $("#pic").val(),
       weapon: equippedWeapon,
@@ -627,7 +630,7 @@ $("#gameStart").on("click", function (event) {
       health: (creationAttributes.vigor * 5),
       elements: [equippedWeapon.element, equippedAccessory.element]
     };
-    
+
 
     newCharacter = new Character(
       answers.name,
@@ -644,7 +647,7 @@ $("#gameStart").on("click", function (event) {
 
     $("#healthField").append("<button type='button' id='playerHealthButton' class='btn btn-success'>" + chosenPlayer.health + "</button>")
 
-    for (i = 0; i < chosenPlayer.elements.length; i++) {
+    for (let i = 0; i < chosenPlayer.elements.length; i++) {
       $("#buttonField").append("<button type='button' id='" + chosenPlayer.elements[i] + "Button' class='btn btn-primary atkButton'>" + chosenPlayer.elements[i] + "</button>");
     }
 
@@ -702,14 +705,14 @@ $("#gameStart").on("click", function (event) {
 
 
 
-var contestants = []
+let contestants = []
 
 
 
 
-for (i = 0; i < 4; i++) {
+for (let i = 0; i < 4; i++) {
 
-  var selector = Math.ceil(Math.random() * Math.ceil(7));
+  let selector = Math.ceil(Math.random() * Math.ceil(7));
 
   switch ($("#" + selector + "Weapon").html()) {
 
@@ -756,9 +759,9 @@ for (i = 0; i < 4; i++) {
   }
 
 
-  newAttributes = new Attributes(parseInt($("#" + selector + "Attack").html()), parseInt($("#" + selector + "Defense").html()), parseInt($("#" + selector + "Vigor").html()), parseInt($("#" + selector + "Agility").html()))
+  let newAttributes = new Attributes(parseInt($("#" + selector + "Attack").html()), parseInt($("#" + selector + "Defense").html()), parseInt($("#" + selector + "Vigor").html()), parseInt($("#" + selector + "Agility").html()))
 
-  newOpponent = new Character(
+  let newOpponent = new Character(
     $("#" + selector + "Name").html(),
     $("#" + selector + "Pic").html(),
     newAttributes,
@@ -785,7 +788,7 @@ console.log(contestants)
 //1.Attack 2.Defense 3.Vigor 4.Agility
 //End Test Code
 
-nextRound = function () {
+const nextRound = function () {
 
   if (battleCount < 4) {
     $("#roundField").html("Round: " + roundCount)
@@ -803,10 +806,10 @@ nextRound = function () {
     $("#roundField").html("Round: " + roundCount)
     roundCount = 1;
 
-    selector = 8
-    newAttributes = new Attributes(parseInt($("#" + selector + "Attack").html()), parseInt($("#" + selector + "Defense").html()), parseInt($("#" + selector + "Vigor").html()), parseInt($("#" + selector + "Agility").html()))
+    let selector = 8
+    let newAttributes = new Attributes(parseInt($("#" + selector + "Attack").html()), parseInt($("#" + selector + "Defense").html()), parseInt($("#" + selector + "Vigor").html()), parseInt($("#" + selector + "Agility").html()))
 
-    finalBoss = new Character(
+    const finalBoss = new Character(
       $("#" + selector + "Name").html(),
       $("#" + selector + "Pic").html(),
       newAttributes,
@@ -830,7 +833,7 @@ nextRound = function () {
 
 
 // Round 1
-gameInit = function () {
+const gameInit = function () {
   chosenOpp = contestants[0]
   $("#opponentPortrait").attr("src", chosenOpp.pic);
   $("#healthField").append("<button type='button' id='opponentHealthButton' class='btn btn-success'>" + chosenOpp.health + "</button>")

@@ -22,8 +22,7 @@ app.set("view engine", "handlebars");
 
 var router = require("./controllers/colosseum_controller.js");
 app.use('/', router);
-app.listen(PORT, function() 
-{
+app.listen(PORT, function () {
 	console.log("app listening on port " + PORT);
 });
 
